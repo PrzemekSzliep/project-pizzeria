@@ -61,6 +61,7 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.initAmountWidget();
       thisProduct.processOrder();
       console.log('new Product:', thisProduct);
     }
@@ -89,6 +90,8 @@
       thisProduct.formInputs = thisProduct.form.querySelectorAll(select.all.formInputs);
       thisProduct.cartButton = thisProduct.element.querySelector(select.menuProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
 
     initAccordion() {
@@ -139,18 +142,18 @@
       const thisProduct = this;
       console.log('initOrderForm');
 
-      thisProduct.form.addEventListener('submit', function(event) {
+      thisProduct.form.addEventListener('submit', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
       });
 
-      for(let input of thisProduct.formInputs) {
-        input.addEventListener('change', function() {
+      for (let input of thisProduct.formInputs) {
+        input.addEventListener('change', function () {
           thisProduct.processOrder();
         });
       }
 
-      thisProduct.cartButton.addEventListener('click', function(event) {
+      thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
       });
@@ -185,15 +188,14 @@
           console.log('option:', option);
 
           /* START IF for check price */
-
           const optionSelected = formData.hasOwnProperty(paramId) && formData[paramId].indexOf(optionId) > -1;
 
-          console.log('option default:', option.default)
+          console.log('option default:', option.default);
           if (optionSelected && !option.default) {
             /* add new option price to price variable */
             price = price + option.price;
 
-            console.log('new price:', price)
+            console.log('new price:', price);
 
             /* END IF */
 
@@ -201,7 +203,7 @@
 
           /* START IF for default options */
 
-          else if (!optionSelected && option.default){
+          else if (!optionSelected && option.default) {
 
             /* decrese option price to price variable */
 
@@ -212,11 +214,28 @@
             /* END ELSE IF */
           }
 
+          const images = thisProduct.imageWrapper.querySelectorAll('.'+paramId+'-'+optionId);
 
-            /* END LOOP */
+          /* START IF */
+          if (optionSelected) {
+            for (let image of images) {
+              image.classList.add('active');
+            }
+          }
+
+          else {
+            for (let image of images) {
+              image.classList.remove('active');
+            }
+          }
+
+
+
+
+          /* END LOOP */
         }
 
-      /* END LOOP for every param */
+        /* END LOOP for every param */
 
       }
 
@@ -224,6 +243,21 @@
 
     }
 
+    initAmountWidget () {
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+    }
+
+  }
+
+  class AmountWidget {
+    constructor(element) {
+      const thisWidget = this;
+
+      console.log('AmounWidget:', thisWidget);
+      console.log('constructor arguments:', element);
+    }
   }
 
   const app = {
