@@ -160,6 +160,13 @@
 
     }
 
+    initAmountWidget () {
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+      thisProduct.amountWidgetElem.addEventListener('updated', thisProduct.processOrder());
+    }
+
     processOrder() {
       const thisProduct = this;
       console.log('processOrder');
@@ -229,9 +236,6 @@
             }
           }
 
-
-
-
           /* END LOOP */
         }
 
@@ -239,14 +243,9 @@
 
       }
 
+      price *= thisProduct.amountWidget.value;
       thisProduct.priceElem.innerHTML = price;
 
-    }
-
-    initAmountWidget () {
-      const thisProduct = this;
-
-      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
     }
 
   }
@@ -255,8 +254,68 @@
     constructor(element) {
       const thisWidget = this;
 
+      thisWidget.value = settings.amountWidget.defaultValue;
+
+      thisWidget.getElements(element);
+      thisWidget.setValue(thisWidget.value);
+      thisWidget.initActions(thisWidget.input.value);
+
       console.log('AmounWidget:', thisWidget);
       console.log('constructor arguments:', element);
+    }
+
+    getElements(element) {
+      const thisWidget = this;
+
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+    setValue(value) {
+      const thisWidget = this;
+
+      const newValue = parseInt(value);
+
+      /* TODO: Add validation */
+      console.log('newValue:', newValue);
+      console.log('actual value:',thisWidget.value);
+
+      if (thisWidget.value != newValue && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
+        thisWidget.value = newValue;
+        thisWidget.announce();
+        thisWidget.input.value = thisWidget.value;
+      }
+      else {
+        thisWidget.input.value = thisWidget.value;
+      }
+
+    }
+
+    initActions(value) {
+      const thisWidget = this;
+      console.log('value:',value);
+      thisWidget.input.addEventListener('change', function(){
+        var val = thisWidget.input.value;
+        thisWidget.setValue(val);
+      });
+      thisWidget.linkDecrease.addEventListener('click', function() {
+        var val = parseInt(thisWidget.input.value);
+        console.log('value:', val);
+        thisWidget.setValue(val - 1);
+      });
+      thisWidget.linkIncrease.addEventListener('click', function(){
+        var val = parseInt(thisWidget.input.value);
+        console.log('value +', val);
+        thisWidget.setValue(val + 1);
+      });
+    }
+
+    announce() {
+      const thisWidget = this;
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
     }
   }
 
