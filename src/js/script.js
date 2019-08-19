@@ -420,19 +420,17 @@
       /* generate HTML baseod on templte */
       const generatedHTML = templates.cartProduct(menuProduct);
 
-      console.log('aaa', generatedHTML);
 
       /* create element using utils.createElementFromHTML */
-      thisCart.element = utils.createDOMFromHTML(generatedHTML);
 
       const generatedDOM = utils.createDOMFromHTML(generatedHTML);
 
 
       /* find menu container */
       const cartContainer = thisCart.dom.productList;
-
+      console.log('generatedDOM', generatedDOM);
       /* add element to menu */
-      cartContainer.appendChild(thisCart.element);
+      cartContainer.appendChild(generatedDOM);
 
       thisCart.products.push(new CartProduct(menuProduct, generatedDOM));
       console.log('thisCart.products:' , thisCart.products);
