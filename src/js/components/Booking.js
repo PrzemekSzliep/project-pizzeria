@@ -16,15 +16,15 @@ export class Booking {
     thisBooking.dom = {};
     thisBooking.dom.wrapper = element;
 
-    thisBooking.dom.wrapper = utils.createDOMFromHTML(generatedHTML);
-    thisBooking.dom.peopleAmount = thisBooking.dom.wrapper.querySelector(select.booking.peopleAmount);
-    thisBooking.dom.hoursAmount = thisBooking.dom.wrapper.querySelector(select.booking.hoursAmount);
+    thisBooking.html = utils.createDOMFromHTML(generatedHTML);
+    thisBooking.dom.peopleAmount = thisBooking.html.querySelector(select.booking.peopleAmount);
+    thisBooking.dom.hoursAmount = thisBooking.html.querySelector(select.booking.hoursAmount);
 
+    thisBooking.dom.wrapper.appendChild(thisBooking.html);
   }
 
   initWidgets() {
     const thisBooking = this;
-
     thisBooking.peopleAmount = new AmountWidget(thisBooking.dom.peopleAmount);
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
   }

@@ -68,6 +68,9 @@ const app = {
       });
       thisApp.activatePage(pagesMatchingHash.length ? pagesMatchingHash[0].id : thisApp.pages[0].id);
     }
+    else {
+      thisApp.activatePage(thisApp.pages[0].id);
+    }
 
     for (let link of thisApp.navLinks) {
 

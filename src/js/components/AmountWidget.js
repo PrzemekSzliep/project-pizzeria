@@ -3,7 +3,6 @@ import {select, settings} from '../settings.js';
 export class AmountWidget {
   constructor(element) {
     const thisWidget = this;
-
     const val = element.querySelector('.amount').value;
 
     if (val == settings.amountWidget.defaultValue) {
@@ -11,7 +10,6 @@ export class AmountWidget {
     } else {
       thisWidget.value = val;
     }
-
 
     thisWidget.getElements(element);
     thisWidget.setValue(thisWidget.value);

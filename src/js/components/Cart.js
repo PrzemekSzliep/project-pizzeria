@@ -68,7 +68,6 @@ export class Cart {
 
     let generatedDOM = utils.createDOMFromHTML(generatedHTML);
 
-
     /* find menu container */
     const cartContainer = thisCart.dom.productList;
     // console.log('generatedDOM', generatedDOM);
