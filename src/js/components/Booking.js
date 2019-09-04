@@ -1,4 +1,4 @@
-import {templates, select, settings} from '../settings.js';
+import {templates, select, settings, classNames} from '../settings.js';
 import {utils} from '../utils.js';
 import {AmountWidget} from './AmountWidget.js';
 import {DatePicker} from './DatePicker.js';
@@ -26,6 +26,8 @@ export class Booking {
     thisBooking.dom.hourPicker = thisBooking.html.querySelector(select.widgets.hourPicker.wrapper);
 
     thisBooking.dom.wrapper.appendChild(thisBooking.html);
+
+    thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
   }
 
   initWidgets() {
@@ -34,6 +36,7 @@ export class Booking {
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
+    thisBooking.dom.wrapper.updated = thisBooking.updateDOM();
   }
 
   getData() {
@@ -95,6 +98,7 @@ export class Booking {
     for (let event of eventsRepeat) {
       thisBooking.makeBooked(event.date, event.hour, event.duration, event.table);
     }
+    thisBooking.updateDOM();
   }
 
   makeBooked(date, hour, duration, table) {
@@ -122,9 +126,24 @@ export class Booking {
 
     thisBooking.booked[date][hour].push(table);
 
-
-
     console.log('BOOKED',thisBooking.booked);
 
+  }
+
+  updateDOM() {
+    const thisBooking = this;
+
+    thisBooking.date = thisBooking.datePicker.value;
+    thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
+
+    for (let table of thisBooking.dom.tables) {
+      console.log('table', table);
+      let tableNumber = table.getAttribute(settings.booking.tableIdAttribute);
+      console.log('table number', tableNumber);
+
+      if (thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour] && thisBooking.booked[thisBooking.date][thisBooking.date][thisBooking.hour]) {
+        thisBooking.classList.add(classNames.booking.tableBooked);
+      }
+    }
   }
 }
