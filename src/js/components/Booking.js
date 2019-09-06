@@ -36,7 +36,9 @@ export class Booking {
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
-    thisBooking.dom.wrapper.updated = thisBooking.updateDOM();
+    thisBooking.dom.wrapper.addEventListener('update', function() {
+      thisBooking.updateDOM();
+    });
   }
 
   getData() {
@@ -130,19 +132,19 @@ export class Booking {
 
   }
 
-  updateDOM() {
+  updateDOM(){
     const thisBooking = this;
 
     thisBooking.date = thisBooking.datePicker.value;
     thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
 
-    for (let table of thisBooking.dom.tables) {
-      console.log('table', table);
-      let tableNumber = table.getAttribute(settings.booking.tableIdAttribute);
-      console.log('table number', tableNumber);
-
-      if (thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour] && thisBooking.booked[thisBooking.date][thisBooking.date][thisBooking.hour]) {
-        thisBooking.classList.add(classNames.booking.tableBooked);
+    for(let table of thisBooking.dom.tables){
+      const tableNumber = parseInt(table.getAttribute(settings.booking.tableIdAttribute));
+      console.log('1')
+      if(thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour] && thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableNumber)){
+        table.classList.add(classNames.booking.tableBooked);
+      } else {
+        table.classList.remove(classNames.booking.tableBooked);
       }
     }
   }
