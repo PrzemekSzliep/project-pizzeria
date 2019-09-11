@@ -25,6 +25,7 @@ export class Booking {
     thisBooking.dom.datePicker = thisBooking.html.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.html.querySelector(select.widgets.hourPicker.wrapper);
 
+
     thisBooking.dom.wrapper.appendChild(thisBooking.html);
 
     thisBooking.dom.tables = thisBooking.dom.wrapper.querySelectorAll(select.booking.tables);
@@ -36,9 +37,28 @@ export class Booking {
     thisBooking.hoursAmount = new AmountWidget(thisBooking.dom.hoursAmount);
     thisBooking.datePicker = new DatePicker(thisBooking.dom.datePicker);
     thisBooking.hourPicker = new HourPicker(thisBooking.dom.hourPicker);
-    thisBooking.dom.wrapper.addEventListener('update', function() {
+    thisBooking.table = '';
+    thisBooking.dom.form = thisBooking.dom.wrapper.querySelector('.booking-form');
+    thisBooking.dom.wrapper.addEventListener('updated', function () {
       thisBooking.updateDOM();
     });
+
+    for (let table of thisBooking.dom.tables) {
+      table.addEventListener('click', function () {
+        if (thisBooking.table) {
+          document.querySelector('[data-table="' + thisBooking.table + '"]').classList.remove(classNames.booking.tableBooked);
+        }
+        let id = table.getAttribute('data-table');
+        table.classList.add(classNames.booking.tableBooked);
+        thisBooking.table = id;
+      });
+    }
+
+    thisBooking.dom.form.addEventListener('submit', function (event) {
+      event.preventDefault();
+      thisBooking.Book();
+    });
+
   }
 
   getData() {
@@ -57,7 +77,6 @@ export class Booking {
       eventsRepeat: settings.db.repeatParam + '&' + utils.queryParams(endDate),
     };
 
-    console.log('getData params', params);
 
     const urls = {
       booking: settings.db.url + '/' + settings.db.booking + '?' + params.booking,
@@ -65,21 +84,19 @@ export class Booking {
       eventsRepeat: settings.db.url + '/' + settings.db.event + '?' + params.eventsRepeat,
     };
 
-    console.log('getData urls', urls);
-
     Promise.all([
       fetch(urls.booking),
       fetch(urls.eventsCurrent),
       fetch(urls.eventsRepeat),
     ])
-      .then(function([bookingsResponse, eventsCurrentResponse, eventsRepeatResponse]){
+      .then(function ([bookingsResponse, eventsCurrentResponse, eventsRepeatResponse]) {
         return Promise.all([
           bookingsResponse.json(),
           eventsCurrentResponse.json(),
           eventsRepeatResponse.json(),
         ]);
       })
-      .then(function([bookings, eventsCurrent, eventsRepeat]){
+      .then(function ([bookings, eventsCurrent, eventsRepeat]) {
         thisBooking.parseData(bookings, eventsCurrent, eventsRepeat);
       });
   }
@@ -106,15 +123,15 @@ export class Booking {
   makeBooked(date, hour, duration, table) {
     const thisBooking = this;
 
-    if(!thisBooking.booked[date]) {
+    if (!thisBooking.booked[date]) {
       thisBooking.booked[date] = {};
     }
 
     let time = hour.split(':');
-    if(time[1] === '30') hour = `${time[0]}.5`;
+    if (time[1] === '30') hour = `${time[0]}.5`;
     else hour = time[0];
 
-    if(!thisBooking.booked[date][hour]) {
+    if (!thisBooking.booked[date][hour]) {
       thisBooking.booked[date][hour] = [];
     }
 
@@ -122,30 +139,70 @@ export class Booking {
 
     hour = hour - (-duration);
 
-    if(!thisBooking.booked[date][hour]) {
+    if (!thisBooking.booked[date][hour]) {
       thisBooking.booked[date][hour] = [];
     }
 
     thisBooking.booked[date][hour].push(table);
 
-    console.log('BOOKED',thisBooking.booked);
+    console.log('BOOKED', thisBooking.booked);
 
   }
 
-  updateDOM(){
+  updateDOM() {
     const thisBooking = this;
 
     thisBooking.date = thisBooking.datePicker.value;
     thisBooking.hour = utils.hourToNumber(thisBooking.hourPicker.value);
-
-    for(let table of thisBooking.dom.tables){
+    for (let table of thisBooking.dom.tables) {
       const tableNumber = parseInt(table.getAttribute(settings.booking.tableIdAttribute));
-      console.log('1')
-      if(thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour] && thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableNumber)){
+      if (thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour] && thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableNumber)) {
         table.classList.add(classNames.booking.tableBooked);
       } else {
         table.classList.remove(classNames.booking.tableBooked);
       }
     }
+
+  }
+
+  Book() {
+    const thisBooking = this;
+
+    const url = settings.db.url + '/' + settings.db.booking;
+    thisBooking.starters = thisBooking.dom.wrapper.querySelectorAll('input[name="starter"]');
+
+    const bookinfo = {
+      date: thisBooking.date,
+      hour: thisBooking.hour,
+      table: thisBooking.table,
+      repeat: false,
+      duration: thisBooking.hoursAmount,
+      ppl: thisBooking.peopleAmount,
+      starters: []
+    };
+    for (let starter of thisBooking.starters) {
+      let name = '';
+      if (starter.checked) {
+        name = starter.value;
+      }
+      bookinfo.starters.push(name);
+    }
+
+
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(bookinfo),
+
+    };
+
+    fetch(url, options)
+      .then(function (response) {
+        return response.json();
+      }).then(function (parsedResponse) {
+        console.log('parsedResponse', parsedResponse);
+      });
   }
 }

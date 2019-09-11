@@ -1,0 +1,205 @@
+.content {
+  .container {
+    margin: 42px auto 20px;
+    max-width: 700px;
+    background: $color-light;
+    padding: 72px 48px;
+    box-sizing: border-box;
+  }
+
+  &-boxes {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    a {
+      &:hover {
+        span {
+          top: 70%;
+
+          &.headline {
+            top: 30%;
+          }
+        }
+      }
+    }
+
+    &-box {
+      height: 118px;
+      border-radius: 5px;
+      text-align: center;
+      flex: 0 0 48%;
+      max-width: 48%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      font-size: 26px;
+      font-family: $font-header;
+      font-weight: $font-bold;
+      text-decoration: none;
+      text-transform: uppercase;
+      position: relative;
+      margin-bottom: 20px;
+
+      &:last-child {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+
+      &.order-box {
+        background-image: url(/images/pizza-1.jpg);
+        color: $color-light;
+      }
+
+      &.booking-box {
+        background-image: url(/images/pizza-2.jpg);
+        color: $color-light;
+      }
+
+      &.hours {
+        background-color: $color-main;
+        color: $color-light;
+        padding-top: 20px;
+
+        span {
+          position: relative;
+          transform: translate(0, 0);
+          top: 0;
+          left: 0;
+        }
+      }
+
+      span {
+        display: block;
+        font-size: 14px;
+        font-family: $font-text;
+        text-transform: none;
+        position: absolute;
+        left: 50%;
+        top: 150%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        transition: $transition;
+
+        &.headline {
+          font-family: $font-header;
+          font-weight: $font-bold;
+          font-size: 26px;
+          text-transform: uppercase;
+          top: 50%;
+        }
+      }
+    }
+  }
+
+  &-review {
+    justify-content: space-between;
+    display: none;
+
+    &.active {
+      display: flex;
+    }
+
+    &-image {
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .col {
+    &:first-child {
+      flex: 0 0 30%;
+    }
+
+    &:last-child {
+      flex: 0 0 66%;
+    }
+  }
+
+  &-reviews {
+    margin-top: 100px;
+
+    &-nav {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+
+      &-btn {
+        border: none;
+        width: 10px;
+        height: 10px;
+        border-radius: 10px;
+        background: $color-nav;
+        margin: 0 5px;
+        padding: 0;
+        display: block;
+
+        &.active {
+          background: $color-dark;
+        }
+      }
+    }
+  }
+
+  &-gallery {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+
+    &-image {
+      flex: 0 0 30%;
+      max-width: 30%;
+      overflow: hidden;
+      border-radius: 20px;
+      height: 182px;
+      margin-bottom: 30px;
+      position: relative;
+
+      img {
+        object-fit: cover;
+        width: 100%;
+        height: 100%;
+      }
+
+      .icons {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        i {
+          color: $color-light;
+          margin: 0 5px;
+          transition: $transition;
+
+          &:hover {
+            color: $color-main;
+          }
+        }
+      }
+
+      .overlay {
+        position: absolute;
+        background: rgba(0, 0, 0, .5);
+        width: 100%;
+        height: 100%;
+        left: 0;
+        bottom: -100%;
+        transition: $transition;
+      }
+
+      &:hover {
+        .overlay {
+          bottom: 0;
+        }
+      }
+    }
+  }
+}
