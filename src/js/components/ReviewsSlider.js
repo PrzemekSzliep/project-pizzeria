@@ -26,14 +26,11 @@ class ReviewsSlider {
       review.setAttribute('data-id', thisSlider.index);
       thisSlider.initNav();
     }
-
-
   }
 
   initNav() {
     const thisSlider = this;
     thisSlider.navs.insertAdjacentHTML('beforeend', '<div class="content-reviews-nav-btn" data-id="'+thisSlider.index+'"></div>');
-
   }
 
   setFirstActive() {

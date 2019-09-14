@@ -25,6 +25,7 @@ export class Booking {
     thisBooking.dom.datePicker = thisBooking.html.querySelector(select.widgets.datePicker.wrapper);
     thisBooking.dom.hourPicker = thisBooking.html.querySelector(select.widgets.hourPicker.wrapper);
 
+    thisBooking.dom.availabilityRangeSlider = thisBooking.html.querySelector('.availability');
 
     thisBooking.dom.wrapper.appendChild(thisBooking.html);
 
@@ -40,8 +41,11 @@ export class Booking {
     thisBooking.table = '';
     thisBooking.dom.form = thisBooking.dom.wrapper.querySelector('.booking-form');
     thisBooking.dom.wrapper.addEventListener('updated', function () {
+      thisBooking.clearTableAvailability();
       thisBooking.updateDOM();
+      thisBooking.initTableAvailability();
     });
+
 
     for (let table of thisBooking.dom.tables) {
       table.addEventListener('click', function () {
@@ -118,6 +122,7 @@ export class Booking {
       thisBooking.makeBooked(event.date, event.hour, event.duration, event.table);
     }
     thisBooking.updateDOM();
+    thisBooking.initTableAvailability();
   }
 
   makeBooked(date, hour, duration, table) {
@@ -157,12 +162,45 @@ export class Booking {
     for (let table of thisBooking.dom.tables) {
       const tableNumber = parseInt(table.getAttribute(settings.booking.tableIdAttribute));
       if (thisBooking.booked[thisBooking.date] && thisBooking.booked[thisBooking.date][thisBooking.hour] && thisBooking.booked[thisBooking.date][thisBooking.hour].includes(tableNumber)) {
+
         table.classList.add(classNames.booking.tableBooked);
       } else {
         table.classList.remove(classNames.booking.tableBooked);
       }
     }
+  }
 
+  initTableAvailability() {
+    const thisBooking = this;
+
+    const tableAvailability = [];
+    console.log(settings.hours.close);
+    for(let i = settings.hours.open; i < settings.hours.close; i += 0.5){
+      if(thisBooking.booked[thisBooking.date][i]){
+        thisBooking.booked[thisBooking.date][i].push[thisBooking.table];
+      } else {
+        thisBooking.booked[thisBooking.date][i] = [];
+      }
+      tableAvailability.push(thisBooking.booked[thisBooking.date][i].length);
+    }
+
+    for(let i = 0; i < tableAvailability.length; i++){
+      const divRangeSlider = document.createElement('div');
+      divRangeSlider.classList.add('availability-div');
+      if(tableAvailability[i] === 1 || tableAvailability[i] === 2) {
+        divRangeSlider.classList.add('medium');
+      } else if(tableAvailability[i] === 3) {
+        divRangeSlider.classList.add('full');
+      } else {
+        divRangeSlider.classList.add('empty');
+      }
+      thisBooking.dom.availabilityRangeSlider.appendChild(divRangeSlider);
+    }
+  }
+
+  clearTableAvailability() {
+    const thisBooking = this;
+    thisBooking.dom.availabilityRangeSlider.innerHTML = '';
   }
 
   Book() {

@@ -198,3 +198,48 @@
   @include flex(row, flex-start, space-between);
   margin: ($base-size * 4) auto;
 }
+
+.availability {
+  position: relative;
+  display: flex;
+}
+
+.availability-div {
+  height: 12px;
+  width: 4.16%;
+  margin: 0;
+  padding: 0;
+  background: green;
+
+  &:first-child {
+    border-radius: 50% 0 0 50%;
+  }
+
+  &:last-child {
+    border-radius: 0 50% 50% 0;
+  }
+
+  &.full {
+    background: red;
+  }
+
+  &.empty {
+    background: green;
+  }
+
+  &.medium {
+    background: orange;
+  }
+}
+
+.rangeSlider__handle__horizontal {
+  z-index: 3;
+}
+
+.rangeSlider {
+  background: green;
+}
+
+.rangeSlider__fill {
+  background: none;
+}
