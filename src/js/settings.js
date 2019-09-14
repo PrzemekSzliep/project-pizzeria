@@ -116,7 +116,7 @@ export const settings = {
     event: 'event',
     dateStartParamKey: 'date_gte',
     dateEndParamKey: 'date_lte',
-    notRepeatParam: 'repeat=false', 
+    notRepeatParam: 'repeat=false',
     repeatParam: 'repeat_ne=false',
   },
 };
